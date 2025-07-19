@@ -1,0 +1,40 @@
+{
+  "$schema": "https://lnav.org/schemas/format-v1.schema.json",
+  "expenses_log": {
+    "title": "Expenses App JSON log",
+    "json": true,
+    "body-field": "body/message",
+    "module-field": "target",
+    "line-format": [
+      {
+        "field": "__timestamp__"
+      },
+      " - ",
+      {
+        "field": "__level__"
+      },
+      {
+        "prefix": " - ",
+        "field": "fields/message"
+      }
+    ],
+    "value": {
+      "filename": {
+        "kind": "string"
+      },
+      "threadName": {
+        "kind": "string"
+      },
+      "fields": {
+        "kind": "json",
+        "hidden": true
+      },
+      "fields/message": {
+        "kind": "string"
+      },
+      "target": {
+        "kind": "string"
+      }
+    }
+  }
+}
