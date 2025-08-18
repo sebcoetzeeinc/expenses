@@ -27,7 +27,11 @@ jobs:
 
       - name: Get commit date
         id: get_date
-        run: echo "commit_date=$(date -u +'%Y%m%d')" >> $GITHUB_OUTPUT
+        run: echo "commit_date=$(git log -1 --format=%cd --date=format:%Y%m%d)" >> $GITHUB_OUTPUT
+
+      - name: Get short SHA
+        id: get_short_sha
+        run: echo "short_sha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
@@ -36,6 +40,6 @@ jobs:
           push: true
           tags: |
             ghcr.io/${{ github.repository }}:latest
-            ghcr.io/${{ github.repository }}:${{ github.sha }}
-            ghcr.io/${{ github.repository }}:${{ steps.get_date.outputs.commit_date }}-${{ github.sha }}
+            ghcr.io/${{ github.repository }}:${{ steps.get_short_sha.outputs.short_sha }}
+            ghcr.io/${{ github.repository }}:${{ steps.get_date.outputs.commit_date }}-${{ steps.get_short_sha.outputs.short_sha }}
 
