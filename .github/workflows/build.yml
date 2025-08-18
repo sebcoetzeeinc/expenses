@@ -33,7 +33,15 @@ jobs:
         id: get_short_sha
         run: echo "short_sha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
-      - name: Build and Push Docker Image
+      - name: Build expenses-builder Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: builder.Dockerfile
+          tags: |
+            expenses-builder:latest
+
+      - name: Build and Push expenses Docker Image
         uses: docker/build-push-action@v5
         with:
           context: .
