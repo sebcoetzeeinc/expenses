@@ -1,3 +1,4 @@
+mod args;
 mod db;
 mod domain;
 mod handlers;
@@ -8,59 +9,16 @@ mod monzo;
 
 use std::sync::Arc;
 
+use args::parse_args;
 use axum::{
     Router,
     routing::{get, post},
 };
-use clap::Parser;
 use db::create_pool;
 use handlers::{authorise, callback, get_transactions, monzo_callback};
 use jobs::{account_poll_task, token_refresh_task};
 use logging::setup_logging;
 use sqlx::PgPool;
-
-#[derive(Parser, Debug)]
-#[clap(author, version, about = "Expenses web application", long_about = None)]
-struct Args {
-    #[arg(long, default_value_t = String::from(""))]
-    base_log_dir: String,
-
-    #[arg(long)]
-    base_url: String,
-
-    #[arg(long, env = "CLIENT_ID")]
-    client_id: String,
-
-    #[arg(long, env = "CLIENT_SECRET")]
-    client_secret: String,
-
-    #[arg(long, env = "DATABASE_URL")]
-    database_url: String,
-
-    #[arg(long)]
-    port: u32,
-
-    #[arg(
-        long,
-        default_value_t = 300u64,
-        help = "Interval in seconds for checking which tokens to refresh"
-    )]
-    token_refresh_interval: u64,
-
-    #[arg(
-        long,
-        default_value_t = 3600u64,
-        help = "Time remaining before expiry when a refresh will be triggered"
-    )]
-    token_refresh_threshold: u64,
-
-    #[arg(
-        long,
-        default_value_t = 3600u64,
-        help = "Interval in seconds for polling accounts"
-    )]
-    account_poll_interval: u64,
-}
 
 pub struct AppState {
     base_url: String,
@@ -74,7 +32,7 @@ pub struct AppState {
 
 #[tokio::main]
 async fn main() {
-    let args = Args::parse();
+    let args = parse_args();
 
     setup_logging(&args.base_log_dir);
 
