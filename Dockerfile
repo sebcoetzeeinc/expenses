@@ -1,4 +1,4 @@
-FROM expenses-builder
+FROM expenses-builder AS builder
 
 COPY ./src ./src
 COPY Cargo.toml Cargo.lock ./
